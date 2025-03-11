@@ -1,10 +1,12 @@
 import "./Post.css";
 
-import { useParams } from 'react-router-dom';
+import { Route, Routes, useParams } from 'react-router-dom';
 import fotoCapa from "assets/sobre_mim_capa.png";
 import posts from "assets/json/posts.json";
 import PostModelo from 'componentes/PostModelo';
 import ReactMarkdown from "react-markdown";
+import NaoEncontrado from "paginas/NaoEncontrada";
+import PaginaPadrao from "componentes/PaginaPadrao";
 
 export default function Post() {
     const parametros = useParams();
@@ -14,16 +16,22 @@ export default function Post() {
     })
 
     if(!post) {
-        return <h1>Post não encontrado...</h1>
+        return <NaoEncontrado />;
     }
 
     return (
-        <PostModelo titulo={post.titulo} fotoCapa={fotoCapa}>
-            <div className="post-markdown-container">
-                <ReactMarkdown>
-                    {post.texto}
-                </ReactMarkdown>
-            </div>
-        </PostModelo>
+        <Routes>
+            <Route path="*" element={<PaginaPadrao />}>
+                <Route index element={
+                    <PostModelo titulo={post.titulo} fotoCapa={fotoCapa}>
+                        <div className="post-markdown-container">
+                            <ReactMarkdown>
+                                {post.texto}
+                            </ReactMarkdown>
+                        </div>
+                    </PostModelo>
+                } />
+            </Route>
+        </Routes>
     )
 }
